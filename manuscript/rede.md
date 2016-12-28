@@ -31,7 +31,7 @@ A opção “–link” é responsável por associar o IP do container de destin
 ```
 docker run -d --name bd -e MYSQL_ROOT_PASSWORD=minhasenha mysql
 
-docker run -d -p 80:80 --name app --link db tutum/apache-php
+docker run -d -p 80:80 --name app --link bd tutum/apache-php
 ```
 
 Após executar os comandos, o container que tem o nome “app” poderia conectar no container do mysql usando o nome “bd”, ou seja, toda vez que ele tentar acessar o nome “bd” ele será automaticamente resolvido para o IP da rede IP 172.17.0.0/16 que o container do mysql obteve na sua inicialização.
@@ -39,11 +39,11 @@ Após executar os comandos, o container que tem o nome “app” poderia conecta
 Pra testar utilizaremos a funcionalidade exec para rodar um comando dentro de um container já existente. Para tal usaremos o nome do container como parâmetro do comando abaixo:
 
 ```
-docker exec -it app ping db
+docker exec -it app ping bd
 ```
-O comando acima será responsável por executar o comando “ping db” dentro do container “app”, ou seja, o container “app” enviará pacotes icmp, que é normalmente usado para testar conectividade entre dois hosts, para o endereço “db”. Esse nome “db” é traduzido para o IP que o container iniciado a partir da imagem do mysql obteve ao iniciar.
+O comando acima será responsável por executar o comando “ping bd” dentro do container “app”, ou seja, o container “app” enviará pacotes icmp, que é normalmente usado para testar conectividade entre dois hosts, para o endereço “bd”. Esse nome “bd” é traduzido para o IP que o container iniciado a partir da imagem do mysql obteve ao iniciar.
 
-**Exemplo:** O container “db” iniciou primeiro e obteve o IP 172.17.0.2. O container “app” iniciou em seguida e pegou o IP 172.17.0.3. Quando o container “app” executar o comando “ping db” na verdade ele enviará pacotes icmp para o endereço 172.17.0.2.
+**Exemplo:** O container “bd” iniciou primeiro e obteve o IP 172.17.0.2. O container “app” iniciou em seguida e pegou o IP 172.17.0.3. Quando o container “app” executar o comando “ping bd” na verdade ele enviará pacotes icmp para o endereço 172.17.0.2.
 
 > Atenção: O nome da opção “–link” causa uma certa confusão, pois ela não cria link de rede IP entre os containers, uma vez que a comunicação entre eles já é possível, mesmo sem a opção link ser configurada. Como foi informado no parágrafo anterior, ele apenas facilita a tradução de nomes para o IP dinâmico obtido na inicialização.
 
